@@ -67,7 +67,7 @@ def course():
                 with open("{}/misc.csv".format(trace),"a") as f:
                     csv.DictWriter(f,fieldname).writerow(row)
 
-'''
+
 def country():
     # Read csv and process
     trace = "analytics/country"
@@ -91,6 +91,8 @@ def country():
             filename = "{}/{}.csv".format(trace,row.get("country").lower())
             with open(filename,"a") as f:
                 csv.DictWriter(f,fieldname).writerow(row)
+
+'''
 
 def email_domain_extract():
     # Read csv and process
