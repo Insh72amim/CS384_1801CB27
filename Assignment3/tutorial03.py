@@ -179,7 +179,7 @@ def dob():
                     case = 5
                 if(case!=-1):
                     newswi.get(case).writerow(row)
-'''
+
 def state():
     # Read csv and process
     trace = "analytics/state"
@@ -201,7 +201,7 @@ def state():
             filename = "{}/{}.csv".format(trace,row.get("state").lower())
             with open(filename,"a") as f:
                 csv.DictWriter(f,fieldname).writerow(row)
-
+'''
 def blood_group():
     # Read csv and process
     trace = "analytics/blood_group"
