@@ -143,7 +143,7 @@ def gender():
             elif row.get("gender").lower() == "female":
                 fwritter.writerow(row)
 
-'''
+
 
 def dob():
     # Read csv and process
@@ -179,7 +179,7 @@ def dob():
                     case = 5
                 if(case!=-1):
                     newswi.get(case).writerow(row)
-
+'''
 def state():
     # Read csv and process
     trace = "analytics/state"
