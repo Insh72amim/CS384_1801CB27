@@ -227,7 +227,7 @@ def blood_group():
                 csv.DictWriter(f,fieldname).writerow(row)
 
 # Create the new file here and also sort it in this function only.
-'''
+
 def new_file_sort():
     # Read csv and process
     nfldnme = ["id","first_name","last_name","country","email","gender","dob","blood_group","state"]
@@ -256,4 +256,3 @@ def new_file_sort():
         writer.writeheader()
         for value in nflst:
             writer.writerow(value)
-'''
