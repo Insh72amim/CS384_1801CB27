@@ -121,7 +121,7 @@ def email_domain_extract():
             with open(filename,"a") as f:
                 csv.DictWriter(f,fieldname).writerow(row)
 
-'''
+
 
 def gender():
     # Read csv and process
@@ -142,6 +142,8 @@ def gender():
                 mwritter.writerow(row)
             elif row.get("gender").lower() == "female":
                 fwritter.writerow(row)
+
+'''
 
 def dob():
     # Read csv and process
