@@ -92,7 +92,7 @@ def country():
             with open(filename,"a") as f:
                 csv.DictWriter(f,fieldname).writerow(row)
 
-'''
+
 
 def email_domain_extract():
     # Read csv and process
@@ -120,6 +120,8 @@ def email_domain_extract():
             filename = "{}/{}.csv".format(trace,domain)
             with open(filename,"a") as f:
                 csv.DictWriter(f,fieldname).writerow(row)
+
+'''
 
 def gender():
     # Read csv and process
