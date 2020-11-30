@@ -44,6 +44,45 @@ def group_allocation(filename, number_of_groups):
     newdata = pd.DataFrame(datastrength)
     newdata = newdata.sort_values(['STRENGTH', 'BRANCH_CODE'])
 
+    groupwisedistribution = {}
+    post=0
+    for x in unique_branches:
+        y = len(files[x]['Roll'])
+        groupwise = int(y / number_of_groups)
+        groupwisedistribution[x] = list()
+        for z in range(number_of_groups):
+            groupwisedistribution[x].append(groupwise)
+        remaining = y % number_of_groups
+        post = post % number_of_groups
+        for z in range(remaining):
+            groupwisedistribution[x][post] += 1
+            post=post+1
+            post=post%number_of_groups
+    groups = {}
+    for x in range(number_of_groups):
+        groups[x] = {}
+        groups[x]['NAME'] = list()
+        groups[x]['ROLL'] = list()
+        groups[x]['e-MAIL'] = list()
+    for x in unique_branches:
+        post = 0
+        flag = 0
+        size = (groupwisedistribution[x][post])
+        while post < number_of_groups:
+
+            groups[post]['NAME'].append(files[x]['Name'][flag])
+            groups[post]['ROLL'].append(files[x]['Roll'][flag])
+            groups[post]['e-MAIL'].append(files[x]['Email'][flag])
+            flag = flag + 1
+            size -= 1
+            if size == 0:
+                post = post + 1
+                if post < number_of_groups:
+                    size = (groupwisedistribution[x][post])
+
+
+    newdata.to_csv('branch_strength.csv')
+
 filename = "Btech_2020_master_data.csv"
 number_of_groups = 12
 group_allocation(filename, number_of_groups)
