@@ -112,4 +112,24 @@ def rename_Suits(folder_name):
 
 
 def rename_How_I_Met_Your_Mother(folder_name):
-    # rename Logic
+    path = os.path.join(os.getcwd(),os.path.join('Subtitles',folder_name))
+    for file in os.listdir(path):
+        try:
+            name = file.split('-')
+            name = [i.strip() for i in name]
+            season = (season_pd - len(rm_zero(name[1].split('x')[0])))*'0' + rm_zero(name[1].split('x')[0])
+            episode = (episode_pd - len(rm_zero(name[1].split('x')[1])))*'0' +rm_zero(name[1].split('x')[1])
+            if len(name)==3:
+                episode_name = name[-1].split('.')[0].strip()
+            else:
+                episode_name = name[-2].split('.')[0].strip()
+            ext = name[-1].split('.')[-1]
+            file_name = name[0] + " - Season " + season + " Episode " + episode + " - " + episode_name + "." + ext
+            file_name_old = os.path.join(path,file)
+            file_name = os.path.join(path,file_name)
+            try:
+                os.rename(file_name_old,file_name)
+            except:
+                os.remove(file_name_old)
+        except:
+            pass
