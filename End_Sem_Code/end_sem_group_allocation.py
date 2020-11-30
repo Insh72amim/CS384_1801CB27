@@ -83,6 +83,28 @@ def group_allocation(filename, number_of_groups):
 
     newdata.to_csv('branch_strength.csv')
 
+    for x in range(number_of_groups):
+        datafile = pd.DataFrame(groups[x])
+        datafile=datafile.sort_values('ROLL')
+        filenames = "Group_no" + str(x + 1) + ".csv"
+        datafile.to_csv(filenames)
+    stats_file={}
+    stats_file['Group_no']=list()
+    stats_file['total']=list()
+    for x in unique_branches:
+        stats_file[x]=list()
+    for x in range(number_of_groups):
+        filenew='Group number '+str(x+1)
+        stats_file['Group_no'].append(filenew)
+        total=0
+        for y in unique_branches:
+            stats_file[y].append(groupwisedistribution[y][x])
+            total+=groupwisedistribution[y][x]
+        stats_file['total'].append(total)
+    datafiles=pd.DataFrame(stats_file)
+
+    datafiles.to_csv('Stats_Grouping.csv')
+
 filename = "Btech_2020_master_data.csv"
 number_of_groups = 12
 group_allocation(filename, number_of_groups)
