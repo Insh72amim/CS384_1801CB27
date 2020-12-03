@@ -1,0 +1,97 @@
+# Function to add two numbers
+def add(num1, num2):
+    addition = num1 + num2
+    return addition
+
+# Function to subtract two numbers
+def subtract(num1, num2):
+    subtraction = num1 - num2
+    return subtraction
+
+# Function to multiply two numbers
+def multiply(num1, num2):
+    #Multiplication Logic
+    multiplication = num1 * num2
+    return multiplication
+
+# Function to divide two numbers
+def divide(num1, num2):
+    #DivisionLogic
+    if num2 == 0:
+        return 0
+    division = num1/num2
+    return division
+
+# Function to add power function
+#You cant use the inbuilt python function x ** y . Write your own function
+def power(num1, num2): #num1 ^ num2
+    #DivisionLogic
+    if ((isinstance(num1,int) or isinstance(num1,float)) and (isinstance(num2,int) or (int(num2)==num2))):
+        num2 = int(num2)
+        if num1==0 and num2==0:
+            return 1
+        elif num1==0 and num2!=0:
+            return 0
+        elif num1!=0 and num2==0:
+            return 1
+        elif num2<0:
+            return round((1/power(num1,-num2)),3)
+        else:
+            p = power(num1,num2//2)
+            if num2%2 == 0:
+                return round(p*p,3)
+            else:
+                return round(num1*p*p,3)
+    return 0
+
+# Python 3 program to print GP.  geometric Progression
+#You cant use the inbuilt python function. Write your own function
+def printGP(a, r, n):
+    temp = [0]
+    if ((isinstance(a,int) or isinstance(a,float)) and (isinstance(r,int) or isinstance(r,float)) and (isinstance(n,int) or int(n)==n)):
+        n = int(n)
+        gp=[]
+        if n<=0:
+            return temp
+        gp.append(round(a,3))
+        if n==1:
+            return gp
+        for x in range(1,n):
+            gp.append(round(gp[x-1]*r,3))
+        return gp
+    return temp
+
+# Python 3 program to print AP.  arithmetic Progression
+#You cant use the inbuilt python function. Write your own function
+def printAP(a, d, n):
+    temp = [0]
+    if ((isinstance(a,int) or isinstance(a,float)) and (isinstance(d,int) or isinstance(d,float)) and (isinstance(n,int) or int(n)==n)):
+        n = int(n)
+        ap=[]
+        if n<=0:
+            return temp
+        ap.append(round(a,3))
+        if n==1:
+            return ap
+        for x in range(1,n):
+            ap.append(round(ap[x-1]+d,3))
+        return ap
+    return temp
+
+
+# Python 3 program to print HP.   Harmonic Progression
+#You cant use the inbuilt python function. Write your own function
+def printHP(a, d, n):
+    temp = [0]
+    if ((isinstance(a,int) or isinstance(a,float)) and (isinstance(d,int) or isinstance(d,float)) and (isinstance(n,int) or int(n)==n)):
+        n = int(n)
+        hp=[]
+        if n<=0:
+            return temp
+        for x in range(n):
+            if (a+(x*d) != 0):
+                hp.append(round(1/(a+(x*d)),3))
+            else:
+                return temp
+        return hp
+    return temp
