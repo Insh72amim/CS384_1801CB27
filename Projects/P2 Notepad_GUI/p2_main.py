@@ -178,6 +178,55 @@ def exitwithoutsaving():
     else:
         exitapplication()
 
+# *****Binding shortcut keys to functions*****
 
+
+text_area.bind("<F5>", datetimefunc)
+text_area.bind("<Control-n>", createnew)
+text_area.bind("<Control-s>", savefile)
+text_area.bind("<Control-o>", openfile)
+# *****Adding the menus*****
+menu = Menu(root)
+root.config(menu=menu)
+
+# Adding the File submenu
+
+sub_menu_1 = Menu(menu, tearoff=0)
+menu.add_cascade(label="File", menu=sub_menu_1)
+sub_menu_1.add_command(label="New    Ctrl+N", command=createnew)
+sub_menu_1.add_command(label="Open   Ctrl+O", command=openfile)
+sub_menu_1.add_command(label="Save    Ctrl+S", command=savefile)
+sub_menu_1.add_command(label="Save as", command=saveasfile)
+sub_menu_1.add_separator()
+sub_menu_1.add_command(label="Exit", command=exitwithoutsaving)
+
+# Adding the Edit submenu
+
+sub_menu_2 = Menu(menu, tearoff=0)
+menu.add_cascade(label="Edit", menu=sub_menu_2)
+sub_menu_2.add_command(label="Undo        Ctrl+Z", command=undofunc)
+sub_menu_2.add_command(label="Redo        Ctrl+Y", command=redofunc)
+sub_menu_2.add_separator()
+sub_menu_2.add_command(label="Cut          Ctrl+X", command=cutop)
+sub_menu_2.add_command(label="Copy       Ctrl+C", command=copyop)
+sub_menu_2.add_command(label="Paste       Ctrl+V", command=pasteop)
+sub_menu_2.add_command(label="Delete      Del", command=deleteop)
+sub_menu_2.add_separator()
+sub_menu_2.add_command(label="Select all    Ctrl+A", command=selectall)
+sub_menu_2.add_command(label="Date/Time   F5", command=datetimefunc)
+
+# Adding the view submenu
+
+sub_menu_3 = Menu(menu, tearoff=0)
+submenu5 = Menu(sub_menu_3, tearoff=0, postcommand=findwordcount)
+submenu6 = Menu(sub_menu_3, tearoff=0, postcommand=findlinecount)
+menu.add_cascade(label="View", menu=sub_menu_3)
+sub_menu_3.add_cascade(label="Word Count", menu=submenu5)
+sub_menu_3.add_cascade(label="Line Count", menu=submenu6)
+submenu5.add_command(label="0 Words", command=None)
+submenu6.add_command(label="0 Lines", command=None)
+# Adding the about submenu
+
+sub_menu_4 = Menu(menu, tearoff=0)
 menu.add_command(label="About", command=about)
 root.mainloop()
