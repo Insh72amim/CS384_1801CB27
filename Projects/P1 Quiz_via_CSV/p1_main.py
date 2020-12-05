@@ -10,33 +10,33 @@ import csv
 
 class screen:
     def __init__(self):
-        self.mainmaster = Tk()
+        self.master = Tk()
         self.user_datastore = datastore.user_datastore()
         # Variables for Register
-        self.reg_rollnumber = StringVar()
-        self.reg_pass = StringVar()
-        self.reg_name = StringVar()
-        self.reg_whatsappNumber = StringVar()
+        self.register_roll = StringVar()
+        self.register_password = StringVar()
+        self.register_name = StringVar()
+        self.rg_wapp_number = StringVar()
         # Variables for login
-        self.login_Roll = StringVar()
-        self.login_password = StringVar()
+        self.lg_roll = StringVar()
+        self.lg_password = StringVar()
         #########################
         self.fill_screen()
-        self.mainmaster.mainloop()
+        self.master.mainloop()
 
     def fill_screen(self):
         # Header
-        self.header = Label(self.mainmaster, text="Login", font=('', 35))
+        self.header = Label(self.master, text="Login", font=('', 35))
         self.header.pack()
         # Login Frame
-        lg_frame = Frame(self.mainmaster, padx=5, pady=5)
+        lg_frame = Frame(self.master, padx=5, pady=5)
         Label(lg_frame, text='Roll No: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(lg_frame, textvariable=self.login_Roll,
+        Entry(lg_frame, textvariable=self.lg_roll,
               bd=5, font=('', 15)).grid(row=0, column=1)
         Label(lg_frame, text='Password: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(lg_frame, textvariable=self.login_password, bd=5,
+        Entry(lg_frame, textvariable=self.lg_password, bd=5,
               font=('', 15), show='*').grid(row=1, column=1)
         Button(lg_frame, text=' Login ', bd=3, font=('', 15),
                padx=5, pady=5, command=self.login).grid()
@@ -45,23 +45,23 @@ class screen:
         self.lg_frame = lg_frame
         self.lg_frame.pack()
         # Register Frame
-        rg_frame = Frame(self.mainmaster)
-        rg_frame = Frame(self.mainmaster, padx=5, pady=5)
+        rg_frame = Frame(self.master)
+        rg_frame = Frame(self.master, padx=5, pady=5)
         Label(rg_frame, text='Name: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(rg_frame, textvariable=self.reg_name,
+        Entry(rg_frame, textvariable=self.register_name,
               bd=5, font=('', 15)).grid(row=0, column=1)
         Label(rg_frame, text='Password: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(rg_frame, textvariable=self.reg_pass, bd=5,
+        Entry(rg_frame, textvariable=self.register_password, bd=5,
               font=('', 15), show='*').grid(row=1, column=1)
         Label(rg_frame, text='Roll No: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(rg_frame, textvariable=self.reg_rollnumber,
+        Entry(rg_frame, textvariable=self.register_roll,
               bd=5, font=('', 15)).grid(row=2, column=1)
         Label(rg_frame, text='Whatsapp_No: ', font=(
             '', 20), pady=5, padx=5).grid(sticky=W)
-        Entry(rg_frame, textvariable=self.reg_whatsappNumber,
+        Entry(rg_frame, textvariable=self.rg_wapp_number,
               bd=5, font=('', 15)).grid(row=3, column=1)
         Button(rg_frame, text='Register', bd=3, font=('', 15),
                padx=5, pady=5, command=self.register).grid()
@@ -70,61 +70,60 @@ class screen:
         self.rg_frame = rg_frame
 
     def login_screen(self):
-        self.login_Roll.set('')
-        self.login_password.set('')
+        self.lg_roll.set('')
+        self.lg_password.set('')
         self.rg_frame.pack_forget()
         self.header["text"] = "Login"
         self.lg_frame.pack()
 
     def rg_screen(self):
-        self.reg_rollnumber.set('')
-        self.reg_pass.set('')
-        self.reg_name.set('')
-        self.reg_whatsappNumber.set('')
+        self.register_roll.set('')
+        self.register_password.set('')
+        self.register_name.set('')
+        self.rg_wapp_number.set('')
         self.lg_frame.pack_forget()
         self.header['text'] = 'Register'
         self.rg_frame.pack()
 
     def login(self):
         res = self.user_datastore.check_cred(
-            self.login_Roll.get(), self.login_password.get())
+            self.lg_roll.get(), self.lg_password.get())
         if res.get("success") == False:
             messagebox.showerror("Error", res.get("msg"))
         else:
-            user = self.user_datastore.get_user(
-                self.login_Roll.get()).get("data")
-            self.mainmaster.destroy()
+            user = self.user_datastore.get_user(self.lg_roll.get()).get("data")
+            self.master.destroy()
             home_screen(user[0], user[2])
 
     def register(self):
         ok = self.user_datastore.register(
-            self.reg_rollnumber.get(),
-            self.reg_pass.get(),
-            self.reg_name.get(),
-            self.reg_whatsappNumber.get()
+            self.register_roll.get(),
+            self.register_password.get(),
+            self.register_name.get(),
+            self.rg_wapp_number.get()
         )
         if ok:
             messagebox.showinfo("Success", "successfully registered")
         else:
             messagebox.showerror(
-                "Error", "{} already exists".format(self.reg_rollnumber.get()))
+                "Error", "{} already exists".format(self.register_roll.get()))
 
 
 class home_screen:
     def __init__(self, roll, name):
         self.roll = roll
         self.name = name
-        mainmaster = Tk()
-        Label(mainmaster, text="Select Quiz", font=(
+        master = Tk()
+        Label(master, text="Select Quiz", font=(
             "Helvetica", 20, "bold italic")).pack()
         selected_quiz = StringVar()
         for filename in os.listdir("./quiz_wise_questions"):
             if filename.endswith(".csv"):
-                Radiobutton(mainmaster, text=filename[:-4], variable=selected_quiz,
-                            value=filename, anchor="e", justify=LEFT).pack()
-        Button(mainmaster, text="Click!!", command=lambda: [
-               mainmaster.destroy(), self.start_quiz(selected_quiz.get())]).pack()
-        mainmaster.mainloop()
+                Radiobutton(master, text=filename[:-4], variable=selected_quiz,
+                            value=filename, anchor="w", justify=LEFT).pack(side = TOP, ipady = 5)
+        Button(master, text="Click!!", command=lambda: [
+               master.destroy(), self.start_quiz(selected_quiz.get())]).pack()
+        master.mainloop()
 
     def start_quiz(self, filename):
         quiz_screen = Tk()
@@ -186,8 +185,7 @@ class home_screen:
         self.quiz_screen = quiz_screen
         quiz_screen.mainloop()
 
-
-def next(self):
+    def next(self):
         if self.q_num >= len(self.q_ds.get("questions")):
             messagebox.showwarning(
                 "Warning", "You are at the end.Press Submit to proceed")
@@ -324,7 +322,6 @@ def next(self):
             q.get("marks_wrong_ans"))
         self.is_com["text"] = "Is compulsory: {}".format(q.get("compulsory"))
 
-
     def timer(self):
         min, sec = divmod(self.max_timer, 60)
         self.timer_lb["text"] = '{:02d}:{:02d}'.format(min, sec)
@@ -384,6 +381,7 @@ def next(self):
         Button(f, text="Jump", command=jump).grid(row=1, column=0)
         Button(f, text="Close X", command=lambda: [
                temp_screen.destroy()]).grid(row=1, column=1)
+
 
         # temp_screen.mainloop()
 scr = screen()
