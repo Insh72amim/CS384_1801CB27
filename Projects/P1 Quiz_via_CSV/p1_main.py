@@ -185,3 +185,141 @@ class home_screen:
         #########################################################
         self.quiz_screen = quiz_screen
         quiz_screen.mainloop()
+
+
+def next(self):
+        if self.q_num >= len(self.q_ds.get("questions")):
+            messagebox.showwarning(
+                "Warning", "You are at the end.Press Submit to proceed")
+        else:
+            self.response["{}".format(self.q_num)] = self.opt_selected.get()
+            self.q_num += 1
+            self.opt_selected.set(self.response["{}".format(self.q_num)])
+            self.display_q(self.q_num)
+
+    def submit(self):
+        self.response["{}".format(self.q_num)] = self.opt_selected.get()
+        self.end_quiz()
+
+    def check_quiz(self):
+        total_marks = 0
+        total_quiz_marks = 0
+        total_unattempted = 0
+        total_cor_ques = 0
+        total_wrong_ques = 0
+        out_fname = "individual_responses/{}_{}.csv".format(
+            self.filename.split(".csv")[0], self.roll)
+        writer = csv.DictWriter(open(out_fname, "w"), fieldnames=["ques_no", "question", "option1", "option2", "option3", "option4",
+                                                                  "correct_option", "marks_correct_ans", "marks_wrong_ans", "compulsory", "marked_choice", "Total", "Legend"])
+        writer.writeheader()
+        for q in self.q_ds.get("questions").values():
+            total = 0
+            resp = self.response[q.get("ques_no")]
+            q["marked_choice"] = resp
+            if resp == -1:
+                q["marked_choice"] = ""
+                q["Legend"] = "Unattempted"
+                total_unattempted += 1
+            if resp == int(q.get("correct_option")):
+                total = int(q.get("marks_correct_ans"))
+                q["Legend"] = "Correct Choice"
+                total_cor_ques += 1
+            elif resp == -1 and q.get("compulsory") == "y":
+                total = int(q.get("marks_wrong_ans"))
+                q["Legend"] = "Wrong Choice"
+                total_wrong_ques += 1
+            elif resp != -1 and resp != int(q.get("correct_option")):
+                total = int(q.get("marks_wrong_ans"))
+                q["Legend"] = "Wrong Choice"
+                total_wrong_ques += 1
+            q["Total"] = total
+            q["option1"] = q.get("options")[0]
+            q["option2"] = q.get("options")[1]
+            q["option3"] = q.get("options")[2]
+            q["option4"] = q.get("options")[3]
+            q.pop("options")
+            writer.writerow(q)
+            total_marks += total
+            total_quiz_marks += int(q.get("marks_correct_ans"))
+        self.user_mark_ds.update_mark(self.roll, self.filename, total_marks)
+        temp_dct = {key: value for key, value in zip(
+            writer.fieldnames, [""]*len(writer.fieldnames))}
+        temp_dct["Total"] = total_marks
+        temp_dct["Legend"] = "Marks Obtained"
+        writer.writerow(temp_dct)
+        temp_dct["Total"] = total_quiz_marks
+        temp_dct["Legend"] = "Total Quiz Marks"
+        writer.writerow(temp_dct)
+        return {
+            "total_ques": len(self.q_ds.get("questions")),
+            "total_attemp": len(self.q_ds.get("questions"))-total_unattempted,
+            "total_Correct": total_cor_ques,
+            "total_wrong": total_wrong_ques,
+            "total_marks": total_marks,
+            "total_quiz_marks": total_quiz_marks
+        }
+
+    def end_quiz(self):
+        self.ques_frame.destroy()
+        self.info_frame.destroy()
+        result = self.check_quiz()
+        Label(self.quiz_screen, text="Quiz Submitted!\nHere The Result").grid(row=0)
+        Label(self.quiz_screen, text="Total Quiz Questions: ").grid(
+            row=1, sticky=W)
+        Label(self.quiz_screen, text=result.get(
+            "total_ques")).grid(row=1, column=1)
+        Label(self.quiz_screen, text="Total Quiz Questions Attempted: ").grid(
+            row=2, sticky=W)
+        Label(self.quiz_screen, text=result.get(
+            "total_attemp")).grid(row=2, column=1)
+        Label(self.quiz_screen, text="Total Correct Questions: ").grid(
+            row=3, sticky=W)
+        Label(self.quiz_screen, text=result.get(
+            "total_Correct")).grid(row=3, column=1)
+        Label(self.quiz_screen, text="Total Wrong Questions: ").grid(
+            row=4, sticky=W)
+        Label(self.quiz_screen, text=result.get(
+            "total_wrong")).grid(row=4, column=1)
+        Label(self.quiz_screen, text="Total Marks Obtained: ").grid(
+            row=5, sticky=W)
+        Label(self.quiz_screen, text=result.get(
+            "total_marks")).grid(row=5, column=1)
+
+    def create_options(self):
+        b_val = 0
+        b = []
+        self.opt_selected = IntVar()
+        self.opt_selected.set(-1)
+        while b_val < 4:
+            btn = Radiobutton(self.ques_frame, text="",
+                              variable=self.opt_selected, value=b_val + 1)
+            b.append(btn)
+            btn.pack()
+            b_val = b_val + 1
+        self.if_correct_label = Label(self.ques_frame, text="")
+        self.ng_marking = Label(self.ques_frame, text="")
+        self.is_com = Label(self.ques_frame, text="")
+        self.if_correct_label.pack()
+        self.ng_marking.pack()
+        self.is_com.pack()
+        return b
+
+    def create_q(self, ques_num):
+        q = self.q_ds.get("questions").get(
+            "{}".format(ques_num)).get("question")
+        qLabel = Label(self.ques_frame, text=q)
+        qLabel.pack()
+        return qLabel
+
+    def display_q(self, ques_num):
+        b_val = 0
+        q = self.q_ds.get("questions").get("{}".format(ques_num))
+        self.ques['text'] = "Q"+str(ques_num) + ". " + q.get("question")
+        for op in q.get("options"):
+            self.opts[b_val]['text'] = op
+            b_val = b_val + 1
+        self.if_correct_label["text"] = "Credits if Correct Option: {}".format(
+            q.get("marks_correct_ans"))
+        self.ng_marking["text"] = "Negative Marking: {}".format(
+            q.get("marks_wrong_ans"))
+        self.is_com["text"] = "Is compulsory: {}".format(q.get("compulsory"))
