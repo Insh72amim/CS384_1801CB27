@@ -323,3 +323,67 @@ def next(self):
         self.ng_marking["text"] = "Negative Marking: {}".format(
             q.get("marks_wrong_ans"))
         self.is_com["text"] = "Is compulsory: {}".format(q.get("compulsory"))
+
+
+    def timer(self):
+        min, sec = divmod(self.max_timer, 60)
+        self.timer_lb["text"] = '{:02d}:{:02d}'.format(min, sec)
+        if self.max_timer == 0:
+            self.channel.put("Stop")
+            print("time out")
+            self.end_quiz()
+            return
+        self.timer_lb.after(1000, self.timer)
+        self.max_timer -= 1
+
+    def __export_csv(self):
+        self.user_mark_ds.export_csv()
+        print("csv files exported")
+
+    def __get_unattem(self):
+        temp_screen = Tk()
+        temp_screen.geometry("300x100")
+        temp_screen.title("Unattempted Questions")
+        for q in self.response:
+            if self.response[q] == -1:
+                Label(temp_screen, text="Q{}".format(q)).pack()
+        Button(temp_screen, text="OK", command=lambda:  [
+               temp_screen.destroy()]).pack()
+
+    def __go_to(self):
+        temp_screen = Tk()
+        temp_screen.title("Go To")
+        f = Frame(temp_screen)
+        f.pack()
+        go_to_var = StringVar(f)
+        go_to_var.set("")
+        Label(f, text='Go To').grid(row=0, column=0)
+        Entry(f, textvariable=go_to_var, bd=5).grid(row=0, column=1)
+
+        def jump():
+            new_f = Frame(temp_screen)
+            new_f.pack()
+            if go_to_var.get() != "":
+                in_q = go_to_var.get()
+                go_to_var.set("")
+                if in_q in [i for i in self.response.keys()]:
+                    q = self.q_ds.get("questions").get("{}".format(in_q))
+                    Label(f, text="Q{}. {}".format(
+                        q.get("ques_no"), q.get("question"))).grid(sticky=W)
+                    o_selected = IntVar(f)
+                    o_selected.set(-1)
+                    for i in range(4):
+                        Radiobutton(f, text=q.get("options")[
+                                    i], variable=o_selected, value=i+1).grid(sticky=W)
+
+                def ano_belo():
+                    self.response[q.get("ques_no")] = o_selected.get()
+                    if q.get("ques_no") == str(self.q_num):
+                        self.opt_selected.set(o_selected.get())
+                Button(f, text="Save", command=ano_belo).grid(sticky=W)
+        Button(f, text="Jump", command=jump).grid(row=1, column=0)
+        Button(f, text="Close X", command=lambda: [
+               temp_screen.destroy()]).grid(row=1, column=1)
+
+        # temp_screen.mainloop()
+scr = screen()
